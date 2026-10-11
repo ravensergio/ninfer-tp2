@@ -5,6 +5,7 @@ rem Model now from Docker volume (native ext4 read, no 9p)
 docker rm -f ninfer-Qwen3.8-Neroud
 docker run --name ninfer-Qwen3.8-Neroud --gpus all -p 8090:8090 -v ninfer-models:/workspace/models ninfer-tp2 ^
   ninfer-serve /workspace/models/official_qwen3_8_27b_nvfp4.ninfer ^
+  --chat-template /workspace/models/froggeric-chat_template-22_5.jinja ^
   --model-id official-qwen3.8-27b-nvfp4 ^
   --host 0.0.0.0 --port 8090 ^
   --tp 2 --devices 0,1 --kv-dtype int8 ^
