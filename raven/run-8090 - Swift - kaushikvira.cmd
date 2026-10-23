@@ -1,8 +1,9 @@
 @echo off
 rem Ninfer TP2 - 180k ctx, host port 8090 (8080 is taken by searxng)
 rem Container listens on 8080 internally; --host 0.0.0.0 makes the Docker mapping work.
+rem Disk cache: saved conversations go to the named volume ninfer-kvcache-swift (cap 30 GiB); after a restart the server resumes from it instead of re-prefilling.
 docker rm -f ninfer-Swift-Uncens
-docker run --name ninfer-Swift-Uncens --gpus all -p 8090:8090 -v ninfer-models:/workspace/models ninfer-tp2 ^
+docker run --name ninfer-Swift-Uncens --gpus all -p 8090:8090 -v ninfer-models:/workspace/models -v ninfer-kvcache-swift:/workspace/kvcache ninfer-tp2 ^
   ninfer-serve /workspace/models/qwen3_8_27b_swift15abl_nvfp4full-dflash2.ninfer ^
   --model-id swift-1.5-qwen3.8-27b ^
   --chat-template /workspace/models/froggeric-chat_template-22_5.jinja ^
@@ -13,4 +14,5 @@ docker run --name ninfer-Swift-Uncens --gpus all -p 8090:8090 -v ninfer-models:/
   --vision --vision-device 1 --max-vision-tokens 4096 ^
   --prefill-chunk 2048 ^
   --preserve-thinking --temperature 0.9 --top-p 0.95 --top-k 20 --min-p 0 ^
+  --disk-cache-dir /workspace/kvcache --disk-cache-gib 30 ^
   --embedding-host
