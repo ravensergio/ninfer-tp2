@@ -2,10 +2,11 @@
 rem Ninfer TP2 - 180k ctx, host port 8090 (8080 is taken by searxng)
 rem Container listens on 8080 internally; --host 0.0.0.0 makes the Docker mapping work.
 rem Disk cache: saved conversations go to the named volume ninfer-kvcache-raven (cap 64 GiB); after a restart the server resumes from it instead of re-prefilling.
+rem TEST 2026-10-24: froggeric chat template removed to test thinking repetition loops (built-in template now).
+rem Restore it from run-8090 - Raven-Official.cmd.bak-froggeric if tool calls or formatting misbehave.
 docker rm -f ninfer-Qwen3.8-Raven
 docker run --name ninfer-Qwen3.8-Raven --gpus all -p 8090:8090 -v ninfer-models:/workspace/models -v ninfer-kvcache-raven:/workspace/kvcache ninfer-tp2 ^
   ninfer-serve /workspace/models/qwen3_8_27b_nvfp4full-huihui-rraven-fp8attn.ninfer ^
-  --chat-template /workspace/models/froggeric-chat_template-22_5.jinja ^
   --model-id qwen3.8-27b-nvfp4-rraven ^
   --host 0.0.0.0 --port 8090 ^
   --tp 2 --devices 0,1 --kv-dtype int8 ^
